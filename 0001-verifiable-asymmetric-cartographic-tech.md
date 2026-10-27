@@ -26,11 +26,11 @@ What we need from FC is the small set of things **only the game server or client
 * **P2. Owner field.** Each receipt names the character / wallet it was issued to. Unforgeable is not the same as non-transferable; without an owner field a copied receipt can be used by anyone.
 * **P3. Published keys.** FC publishes its attestation public keys as an **on-chain registry object**, with rotation, so contracts and backends don't hard-code keys.
 * **P4. Batch signing.** FC signs a **Merkle root** over a batch of receipts, so a pilot can prove any single receipt against the root. Nobody wants to handle 1m individually signed receipts.
-* **P5. Client hand-off (open question).** Builders need some way to get receipts from the client into their pages and contracts. One candidate is to make this a **capability of the existing Smart Assembly interaction**:
-  * An assembly declares which receipt types it accepts. When a pilot opens it, the client offers matching receipts and the pilot approves before anything is shared.
-  * The pilot has already chosen to interact with that assembly, and its owner is known on-chain, so nothing new is exposed to every page. Recon objectives map naturally onto "scan X, bring the receipt back to this assembly."
-  * Fallback: a `window.ef` bridge in the in-game browser (CEF / Chromium 156), with **per-site approval and selective sharing**, like a wallet "connect" prompt. Exposing the whole receipt store to any page would let one malicious map harvest a pilot's intel history.
+* **P5. Assembly hand-off (open question).** Builders need some way to get receipts from the client into their contracts. One candidate is to make this a **capability of the existing Smart Assembly interaction**:
+  * An assembly declares which receipt types it accepts. When a pilot interacts with it, the client offers matching receipts and the pilot approves before anything is shared.
+  * The pilot has already chosen to interact with that assembly, and its owner is known on-chain. Recon objectives map naturally onto "scan X, bring the receipt back to this assembly."
   * Not proposed: minting receipts as owned on-chain objects would remove the need for a hand-off, but FC would pay gas on every jump.
+* **P6. In-game browser with a receipt bridge (separate ask).** There is no in-game browser today. This is an independent ask from P5: a browser or flight-view overlay in the client (e.g. on the embedded CEF), with a `window.ef` bridge to the local receipt store. It would need **per-site approval and selective sharing**, like a wallet "connect" prompt; exposing the whole receipt store to any page would let one malicious map harvest a pilot's intel history. P1-P5 are useful without it.
 
 ### Walk: More Receipt Types (Optional)
 
@@ -52,7 +52,7 @@ Same signing, owner field, keys and hand-off as crawl, covering more of the game
 
 Examples, not asks. Design is up to whoever builds them, including replay protection, fair exchange, and pricing.
 
-* **Tribal intel maps:** pilots share receipts with their tribe's permissioned map, which verifies FC's signature, with rank-based layers rendered in the in-game browser.
+* **Tribal intel maps:** pilots share receipts with their tribe's permissioned map, which verifies FC's signature, with rank-based layers (rendered in flight if P6 lands).
 * **Recon objectives:** tribe contracts post "submit a fresh scan for System X" and pay out on a valid receipt.
 * **Route-intel markets:** sellers prove what they hold (run stage) before revealing it.
 * **Lootable nav data:** traded and consumed like any other item.
@@ -61,14 +61,16 @@ Examples, not asks. Design is up to whoever builds them, including replay protec
 
 ## 4. Open Questions for FC
 
-1. **Hand-off:** which part of the client should hand receipts over: assembly interactions, a general bridge, or something else?
-2. **Jump receipt contents:** which fields go in jump receipts versus scan receipts? Signed relative distance/bearing on every jump would let players triangulate absolute coordinates quickly.
-3. **Cheapest additions:** which walk-stage receipt types would be cheapest for FC to add?
+1. **Hand-off:** is the assembly interaction the right place for receipts to leave the client, or is there a better path?
+2. **In-game browser:** is a client browser/overlay (P6) on the roadmap at all?
+3. **Jump receipt contents:** which fields go in jump receipts versus scan receipts? Signed relative distance/bearing on every jump would let players triangulate absolute coordinates quickly.
+4. **Cheapest additions:** which walk-stage receipt types would be cheapest for FC to add?
 
 ---
 
 ## 5. Summary of "Asks" for FC
 
-1. **Crawl (core):** Ed25519-signed jump and scan receipts with an owner field, an on-chain key registry, batch (Merkle root) signing, and a client hand-off path (P1-P5).
-2. **Walk (optional):** more receipt types: Objective Tracker completion, loot, destruction/status.
-3. **Run (optional):** POD-format signing plus standard GPC configurations with on-chain verifying keys, enabling a verifiable information economy.
+1. **Crawl (core):** Ed25519-signed jump and scan receipts with an owner field, an on-chain key registry, batch (Merkle root) signing, and an assembly hand-off path (P1-P5).
+2. **In-game browser (separate):** a client browser/overlay with a permissioned `window.ef` receipt bridge (P6).
+3. **Walk (optional):** more receipt types: Objective Tracker completion, loot, destruction/status.
+4. **Run (optional):** POD-format signing plus standard GPC configurations with on-chain verifying keys, enabling a verifiable information economy.
