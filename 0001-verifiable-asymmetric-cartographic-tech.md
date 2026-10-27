@@ -30,12 +30,11 @@ What we need from FC is the small set of things **only the game server or client
   * An assembly declares which receipt types it accepts. When a pilot interacts with it, the client offers matching receipts and the pilot approves before anything is shared.
   * The pilot has already chosen to interact with that assembly, and its owner is known on-chain. Recon objectives map naturally onto "scan X, bring the receipt back to this assembly."
   * Not proposed: minting receipts as owned on-chain objects would remove the need for a hand-off, but FC would pay gas on every jump.
-* **P6. In-game browser with a receipt bridge (separate ask).** There is no in-game browser today. This is an independent ask from P5: a browser or flight-view overlay in the client (e.g. on the embedded CEF), with a `window.ef` bridge to the local receipt store. It would need **per-site approval and selective sharing**, like a wallet "connect" prompt; exposing the whole receipt store to any page would let one malicious map harvest a pilot's intel history. P1-P5 are useful without it.
+### Walk: More Receipt Types & Hand-off Paths (Optional)
 
-### Walk: More Receipt Types (Optional)
+Same signing, owner field and keys as crawl, covering more of the game and, if needed, a second way out of the client. For example:
 
-Same signing, owner field, keys and hand-off as crawl, covering more of the game. For example:
-
+* **In-game browser with a receipt bridge (if the assembly route isn't right).** There is no in-game browser today. If assembly interaction turns out to be the wrong hand-off path, the alternative is a client browser or flight-view overlay (e.g. on the embedded CEF) with a `window.ef` bridge to the local receipt store. It would need **per-site approval and selective sharing**, like a wallet "connect" prompt; exposing the whole receipt store to any page would let one malicious map harvest a pilot's intel history.
 * **Objective Tracker binding.** Pilots point the native top-left Tutorial/Objective tracker at a contract-defined objective. On completion the server issues a receipt: *"character X completed objective Y defined by contract Z."* Tribes can push recon missions to pilots' HUDs and verify completion without trusting the pilot.
 * **Loot receipts.** NPC caches and wrecks drop signed nav-data fragments.
 * **Destruction & status receipts.** Gates going offline, assemblies destroyed: a verifiable source for the "road closures" in Section 1.
@@ -52,7 +51,7 @@ Same signing, owner field, keys and hand-off as crawl, covering more of the game
 
 Examples, not asks. Design is up to whoever builds them, including replay protection, fair exchange, and pricing.
 
-* **Tribal intel maps:** pilots share receipts with their tribe's permissioned map, which verifies FC's signature, with rank-based layers (rendered in flight if P6 lands).
+* **Tribal intel maps:** pilots share receipts with their tribe's permissioned map, which verifies FC's signature, with rank-based layers (rendered in flight if an in-game browser lands).
 * **Recon objectives:** tribe contracts post "submit a fresh scan for System X" and pay out on a valid receipt.
 * **Route-intel markets:** sellers prove what they hold (run stage) before revealing it.
 * **Lootable nav data:** traded and consumed like any other item.
@@ -62,7 +61,7 @@ Examples, not asks. Design is up to whoever builds them, including replay protec
 ## 4. Open Questions for FC
 
 1. **Hand-off:** is the assembly interaction the right place for receipts to leave the client, or is there a better path?
-2. **In-game browser:** is a client browser/overlay (P6) on the roadmap at all?
+2. **In-game browser:** if assembly hand-off isn't right, is a client browser/overlay on the roadmap at all?
 3. **Jump receipt contents:** which fields go in jump receipts versus scan receipts? Signed relative distance/bearing on every jump would let players triangulate absolute coordinates quickly.
 4. **Cheapest additions:** which walk-stage receipt types would be cheapest for FC to add?
 
@@ -71,6 +70,5 @@ Examples, not asks. Design is up to whoever builds them, including replay protec
 ## 5. Summary of "Asks" for FC
 
 1. **Crawl (core):** Ed25519-signed jump and scan receipts with an owner field, an on-chain key registry, batch (Merkle root) signing, and an assembly hand-off path (P1-P5).
-2. **In-game browser (separate):** a client browser/overlay with a permissioned `window.ef` receipt bridge (P6).
-3. **Walk (optional):** more receipt types: Objective Tracker completion, loot, destruction/status.
-4. **Run (optional):** POD-format signing plus standard GPC configurations with on-chain verifying keys, enabling a verifiable information economy.
+2. **Walk (optional):** more receipt types (Objective Tracker completion, loot, destruction/status), and an in-game browser with a permissioned `window.ef` receipt bridge if the assembly route isn't right.
+3. **Run (optional):** POD-format signing plus standard GPC configurations with on-chain verifying keys, enabling a verifiable information economy.
